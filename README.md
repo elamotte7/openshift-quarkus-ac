@@ -45,6 +45,8 @@ configure you docker registry, go to application.properties and modify with your
 %openshift.quarkus.openshift.image-pull-secrets=${K8S_REGISTRY_PASSWORD:<your-password-docker-repository>}
 ````
 
+crc oc-env
+
 Create the project
 
 ````shell script
