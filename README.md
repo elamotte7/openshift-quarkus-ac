@@ -35,22 +35,14 @@ If you want to learn more about building native executables, please consult http
 
 Have an Openshift installed and set up.
 
-configure you docker registry, go to application.properties and modify with your specific properties
-
-````
-# Registry
-%openshift.quarkus.container-image.registry=${K8S_REGISTRY_URL:<your-docker-repository>}
-%openshift.quarkus.container-image.username=${K8S_REGISTRY_USERNAME:<your-username-docker-repository>}
-%openshift.quarkus.container-image.password=${K8S_REGISTRY_PASSWORD:<your-password-docker-repository>}
-%openshift.quarkus.openshift.image-pull-secrets=${K8S_REGISTRY_PASSWORD:<your-password-docker-repository>}
-````
-
-crc oc-env
-
-Create the project
+To keep it as simple as possible, we will use Code Ready Container as Openshift cluster. 
 
 ````shell script
-$ oc new-project quarkus-apero-code --description="Example of quarkus app deploy automatically in a openshift cluster" --display-name="quarkus-apero-code"
+$ crc start
+````
+
+````shell script
+$ crc oc-env
 ````
 
 Login to openshift
@@ -59,13 +51,38 @@ Login to openshift
 $ oc login -u developer -p developer https://api.crc.testing:6443
 ````
 
+Create the project
+
+````shell script
+$ oc new-project quarkus-apero-code --description="Example of quarkus app deploy automatically in a openshift cluster" --display-name="quarkus-apero-code"
+````
+
 Then launch
 
 ````shell script
 $ ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.profile=openshift
 ````
 
-Check if everithing is well deployed
+the ouput
+
+````properties
+[INFO] [io.quarkus.container.image.openshift.deployment.OpenshiftProcessor] Push successful
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Deploying to openshift server: https://api.crc.testing:6443/ in namespace: quarkus-apero-code.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ServiceAccount openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: Service openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: RoleBinding openshift-quarkus-ac-view.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ImageStream openjdk-11.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ImageStream openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: BuildConfig openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: DeploymentConfig openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: Route openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] The deployed application can be accessed at: http://openshift-quarkus-ac-quarkus-apero-code.apps-crc.testing
+[INFO] [io.quarkus.deployment.QuarkusAugmentor] Quarkus augmentation completed in 144508ms
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+````
+
+Check if everything is well deployed
 
 ````shell script
 $ oc get is -n quarkus-apero-code
@@ -75,8 +92,4 @@ $ oc get svc -n quarkus-apero-code
 
 Test it
 
-````shell script
-$ oc expose svc/openshift-quarkus-ac -n quarkus-apero-code
-$ oc get routes -n quarkus-apero-code
-$ curl http://<route>/openshift-quarkus-ac
-````
+Clic on the link at the end of the log of the build
