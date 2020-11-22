@@ -63,7 +63,7 @@ Then launch
 $ ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.profile=openshift
 ````
 
-the ouput
+the console output
 
 ````properties
 [INFO] [io.quarkus.container.image.openshift.deployment.OpenshiftProcessor] Push successful
