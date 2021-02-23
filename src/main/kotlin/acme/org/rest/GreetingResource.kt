@@ -11,6 +11,6 @@ class GreetingResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    fun hello(): String = "hello"
+    fun hello(): String = "hello Openshift!"
 
 }

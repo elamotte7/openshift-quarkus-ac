@@ -42,6 +42,10 @@ $ crc start
 ````
 
 ````shell script
+$ crc console
+````
+
+````shell script
 $ crc oc-env
 ````
 
@@ -60,7 +64,7 @@ $ oc new-project quarkus-apero-code --description="Example of quarkus app deploy
 Then launch
 
 ````shell script
-$ ./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.profile=openshift
+$ ./mvnw clean package -Dquarkus.profile=openshift -Dquarkus.kubernetes.deploy=true
 ````
 
 the console output

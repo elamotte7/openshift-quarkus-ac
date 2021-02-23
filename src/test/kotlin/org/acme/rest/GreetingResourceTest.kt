@@ -13,6 +13,6 @@ class GreetingResourceTest {
                 .`when`()["/greeting"]
                 .then()
                 .statusCode(200)
-                .body(CoreMatchers.`is`("hello"))
+                .body(CoreMatchers.`is`("hello Openshift!"))
     }
 }
