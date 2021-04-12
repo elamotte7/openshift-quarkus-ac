@@ -64,24 +64,22 @@ $ oc new-project quarkus-apero-code --description="Example of quarkus app deploy
 Then launch
 
 ````shell script
-$ ./mvnw clean package -Dquarkus.profile=openshift -Dquarkus.kubernetes.deploy=true
+$ ./mvnw clean package -Dquarkus.profile=os -Dquarkus.kubernetes.deploy=true
 ````
 
 the console output
 
 ````properties
 [INFO] [io.quarkus.container.image.openshift.deployment.OpenshiftProcessor] Push successful
-[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Deploying to openshift server: https://api.crc.testing:6443/ in namespace: quarkus-apero-code.
-[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ServiceAccount openshift-quarkus-ac.
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Deploying to openshift server: https://api.lab.ocp.lan:6443/ in namespace: quarkus-apero-code.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: Service openshift-quarkus-ac.
-[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: RoleBinding openshift-quarkus-ac-view.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ImageStream openjdk-11.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: ImageStream openshift-quarkus-ac.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: BuildConfig openshift-quarkus-ac.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: DeploymentConfig openshift-quarkus-ac.
 [INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] Applied: Route openshift-quarkus-ac.
-[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] The deployed application can be accessed at: http://openshift-quarkus-ac-quarkus-apero-code.apps-crc.testing
-[INFO] [io.quarkus.deployment.QuarkusAugmentor] Quarkus augmentation completed in 144508ms
+[INFO] [io.quarkus.kubernetes.deployment.KubernetesDeployer] The deployed application can be accessed at: http://openshift-quarkus-ac-quarkus-apero-code.apps.lab.ocp.lan
+[INFO] [io.quarkus.deployment.QuarkusAugmentor] Quarkus augmentation completed in 85106ms
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 ````
@@ -97,3 +95,22 @@ $ oc get svc -n quarkus-apero-code
 Test it
 
 Clic on the link at the end of the log of the build
+
+# Keycloak
+
+Get the token for api
+
+````shell script
+curl --insecure -X POST https://keycloak-keycloak.apps.lab.ocp.lan/auth/realms/quarkus/protocol/openid-connect/token \
+--user backend-service:secret \
+-H 'content-type: application/x-www-form-urlencoded' \
+-d 'username=admin&password=admin&grant_type=password' | jq --raw-output '.access_token'
+````
+
+Test the api
+
+````shell script
+curl -v -X GET \
+  http://openshift-quarkus-ac-quarkus-apero-code.apps.lab.ocp.lan/api/users/me \
+  -H "Authorization: Bearer "<access_token>
+````

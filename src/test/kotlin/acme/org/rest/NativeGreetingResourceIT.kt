@@ -1,4 +1,4 @@
-package org.acme.rest
+package acme.org.rest
 
 import io.quarkus.test.junit.NativeImageTest
 
